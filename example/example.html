@@ -1,0 +1,7 @@
+${this.title()}
+<div>
+    The answer for <span style="color: red">${this.state.name}</span> is <span>${this.state.answer}</span>
+</div>
+${this.props.children} Name:
+<input type="text" py-input={this.change.bind(this)} value=${this.state.name} />
+<button py-click={this.click.bind(this)}>Change</button>
