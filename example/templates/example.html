@@ -1,0 +1,14 @@
+${this.title()}
+
+${this.props.children} Name:
+<input type="text" py-input="{this.change.bind(this)}" value="${this.param.name}" />
+<button py-click="{this.click.bind(this)}">Change</button>
+<div 	py-hide="${this.param.answer}">
+    The answer for <span style="color: red">${this.param.name}</span> is <span>${this.param.answer}</span>
+</div>
+
+<Demo
+	ref="child"
+	name="Pepe"
+	click="{this.childClick.bind(this)}">
+</Demo>

@@ -1,30 +1,39 @@
 import domUtils from './dom';
+import core from './core'
 import utils from './utils';
 
 class Component {
 	constructor(element) {
 		this.props = this.__getProps(element);
+		this.__templateString = this.template();
 
-		this.template = this.getTemplate ? this.getTemplate() : '';
-		this.__setState(element);
+		this.__setParameters(element);
 		this.__setEvents(element);
 		this.__setRefs(element);
 	}
 
-	__setState(element) {
-		this.__stateHandler = {
+	parameters() {
+		return {};
+	}
+
+	template() {
+		return '';
+	}
+
+	loaded() {}
+
+	__setParameters(element) {
+		this.__parametersHandler = {
 			set: (obj, prop, newval) => {
 				obj[prop] = newval;
 
-				this.secureState[prop] = utils.htmlEntities(newval);
+				this.secureParam[prop] = utils.htmlEntities(newval);
 
-				const state = Object.assign({}, this.state)
+				const params = Object.assign({}, this.param);
 
-				utils.mergeDeep(obj, this.secureState);
-
-				domUtils.changeDom(initialElements, element, this.render.bind(this));
-
-				utils.mergeDeep(obj, state);
+				utils.mergeDeep(obj, this.secureParam);
+				domUtils.changeDom(core.componentNames, initialElements, element, this.__getTemplate.bind(this));
+				utils.mergeDeep(obj, params);
 
 				obj[prop] = newval;
 
@@ -32,46 +41,52 @@ class Component {
 			}
 		};
 
-		this.state = new Proxy(this.initState(), this.__stateHandler);
-		this.secureState = {};
+		this.param = new Proxy(this.parameters(), this.__parametersHandler);
+		this.secureParam = {};
 
-		let initialElements = domUtils.loadDom(element, this.render.bind(this));
+		const initialElements = domUtils.loadDom(core.componentNames, element, this.__getTemplate.bind(this));
+
+		initialElements.components.forEach((child) => child.setAttribute('py-parent', element.getAttribute('py-id')));
 	}
 
 	__setEvents(element) {
-		this.events = ['click', 'input'];
+		core.events.forEach((event) => {
+			const eventName = `py-${event}`;
+			const eventElements = Array.from(element.querySelectorAll(`[${eventName}]`));
 
-		this.events.forEach((event) => {
-			const eventElements = element.querySelectorAll('[py-' + event + ']');
+			eventElements.forEach((eventElement) => {
+				const attribute = eventElement.getAttribute(eventName);
 
-			Array.from(eventElements).forEach((eventElement) => {
-				const attribute = eventElement.getAttribute('py-' + event);
-
-				if (attribute[0] === '{' && attribute[attribute.length - 1] === '}') {
+				if (utils.hasBrackets(attribute)) {
 					const expresion = attribute.substring(1, attribute.length - 1);
 
-					const method = (() => eval(expresion)).call(this);
+					const method = utils.expresion(expresion, this);
 
 					eventElement.addEventListener(event, method);
 				}
 			});
-		})
+		});
 	}
 
 	__getProps(element) {
-		let attributes = element.attributes;
+		let attributes = Array.from(element.attributes);
 
 		const props = {};
 
-		Array.from(attributes).forEach((attribute) => {
-			if (attribute.value[0] === '{' && attribute.value[attribute.value.length - 1] === '}') {
-				const expresion = attribute.value.substring(1, attribute.value.length - 1);
-				try {
-					props[attribute.name] = eval(expresion);
-				} catch (error) {
-					throw new TypeError(element.nodeName + ': Attribute expression - ' + attribute.name + ' -> ' + expresion)
-				}
-			} else props[attribute.name] = attribute.value;
+		const parentId = element.getAttribute('py-parent');
+
+		attributes.forEach((attribute) => {
+			if (!utils.hasBrackets(attribute.value))
+				return props[attribute.name] = attribute.value;
+			
+			const expresion = attribute.value.substring(1, attribute.value.length - 1);
+			const scope = parentId ? core.componentInstances[parentId] : this;
+
+			try {
+				props[attribute.name] = utils.expresion(expresion, scope);
+			} catch (error) {
+				throw new TypeError(`${element.nodeName} -> Attribute: ${attribute.name} :: ${expresion}`)
+			} 
 		});
 
 		props.children = element.innerHTML;
@@ -80,18 +95,24 @@ class Component {
 	}
 
 	__setRefs(element) {
-		const refs = element.querySelectorAll('[ref]');
+		const refs = Array.from(element.querySelectorAll('[ref]'));
 
-		this.refs = {};
+		setTimeout(() => {
+			this.refs = {};
 
-		Array.from(refs).forEach((ref) => {
-			const refName = ref.getAttribute('ref');
-			this.refs[refName] = ref;
+			refs.forEach((ref) => {
+				const refName = ref.getAttribute('ref');
+				const id = ref.getAttribute('py-id');
+				
+				this.refs[refName] = id ? core.componentInstances[id] : ref;
+			});
+
+			this.loaded();
 		});
 	}
 
-	render() {
-		return this.template ? eval('`' + this.template + '`') : '';
+	__getTemplate() {
+		return eval('`' + this.__templateString + '`');
 	}
 }
 

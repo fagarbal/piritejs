@@ -1,28 +1,45 @@
 class DomUtils {
-	getNodes(node, tags = [], texts = []) {
-		Array.from(node.childNodes).forEach((childNode) => {
-			if (childNode.childNodes.length) this.getNodes(childNode, tags, texts);
+	getNodes(componentNames, node, tags = [], texts = [], components = []) {
+		const childNodes = Array.from(node.childNodes);
+
+		childNodes.forEach((childNode) => {
+			if (childNode.childNodes.length) this.getNodes(componentNames, childNode, tags, texts, components);
+			else if (componentNames.includes(childNode.nodeName)) components.push(childNode);
 			else if (childNode.nodeType === 3) texts.push(childNode);
 			else if (childNode.nodeType === 1) tags.push(childNode);
 		});
 
-		if (node.nodeType !== 3) tags.push(node);
+		const isComponent = componentNames.includes(node.nodeName);
+
+		if (node.nodeType !== 3) (isComponent ? components : tags).push(node);
 
 		return {
 			tags,
-			texts
+			texts,
+			components
 		};
 	}
 
-	loadDom(component, render) {
-		component.innerHTML = render();
-		return this.getInnerElements(component);
+	setHidden(node) {
+		const isHide = node.getAttribute('py-hide');
+		const hidden = isHide === "false" ? false : Boolean(isHide);
+
+		node.hidden = hidden;
 	}
 
-	getInnerElements(node) {
-		let childs = this.getNodes(node);
+	loadDom(componentNames, component, template) {
+		component.innerHTML = template();
 
-		childs.tags.pop();
+		const nodes = this.getInnerElements(componentNames, component);
+
+		return nodes;
+	}
+
+	getInnerElements(componentNames, node, virtual) {
+		let childs = this.getNodes(componentNames, node);
+
+		if (virtual) childs.tags.pop();
+		childs.components.pop();
 
 		return childs;
 	}
@@ -49,20 +66,23 @@ class DomUtils {
 
 					if (attribute.value !== originalAttribute.value) {
 						originalAttribute.value = attribute.value;
+						if (initialElement.value) initialElement.value = attribute.value;
 					}
 				});
 			}
+
+			this.setHidden(initialElement);
 		});
 	}
 
-	changeDom(initialNodes, component, render) {
-		let newTemplate = render();
+	changeDom(componentNames, initialNodes, component, template) {
+		let newTemplate = template();
 
 		if (component.innerHTML === newTemplate) return;
 
 		let virtualTemplate = document.createRange().createContextualFragment(newTemplate);
 
-		let newNodes = this.getInnerElements(virtualTemplate);
+		let newNodes = this.getInnerElements(componentNames, virtualTemplate, true);
 
 		this.changeTextNodes(initialNodes.texts, newNodes.texts);
 		this.changeTagNodes(initialNodes.tags, newNodes.tags);

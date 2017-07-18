@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --hot --inline --history-api-fallback"
+    "dev": "webpack-dev-server --hot --inline --history-api-fallback",
+    "dist": "webpack"
   },
   "author": "Fabio",
   "license": "MIT",

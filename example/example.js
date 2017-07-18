@@ -1,20 +1,15 @@
 import { Component } from '../src';
-import template from './example.html';
+import template from './templates/example.html';
 
 export default class Example extends Component {
-  constructor(...props) {
-    super(...props);
-
-    setInterval(() => {
-      this.state.counter++;
-    }, this.props.refresh ||  1000);
+  loaded() {
   }
 
-  getTemplate() {
+  template() {
     return template;
   }
 
-  initState() {
+  parameters() {
     return {
       answer: this.props.answer,
       name: this.props.name ||  '',
@@ -23,15 +18,19 @@ export default class Example extends Component {
   }
 
   click(event) {
-    this.state.answer = !this.state.answer;
-    this.props.click(this.state.name);
+    this.param.answer = !this.param.answer;
+    this.props.click(this.param.name);
+  }
+
+  childClick(value) {
+    this.param.name = value;
   }
 
   change(event) {
-    this.state.name = event.target.value;
+    this.param.name = event.target.value;
   }
 
   title() {
-    return `<h1>Esto es un titulo <span> Count ${this.state.counter}<br></span></h1>`;
+    return `<h1>Esto es un titulo <span> Count ${this.param.counter}<br></span></h1>`;
   }
 }

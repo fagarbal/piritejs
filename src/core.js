@@ -1,12 +1,20 @@
 class Core {
 	constructor() {
 		this.components = {};
+		this.componentNames = [];
 		this.componentInstances = {};
+		this.events = ['click', 'input', 'change'];
 	}
 
-	add(component) {
-		this.components[component.name] = component;
-		return this;
+	add(components) {
+		if (Array.isArray(components)) {
+			components.forEach((component) => this.add(component));
+		} else {
+			this.components[components.name] = components;
+			this.componentNames.push(components.name.toUpperCase());
+		}
+
+		return this;	
 	}
 
 	run(nameApp) {
@@ -16,14 +24,17 @@ class Core {
 			const appContent = nameApp ? document.getElementById(nameApp) : document.body;
 
 			Object.keys(this.components).forEach((componentName) => {
-				const componentsElements = appContent.querySelectorAll(componentName);
+				const componentsElements = Array.from(appContent.querySelectorAll(componentName));
 
-				Array.from(componentsElements).forEach((element) => {
+				componentsElements.forEach((element) => {
 					try {
+						element.setAttribute('py-id', idInstances);
+
 						this.componentInstances[idInstances] = new this.components[componentName](element);
 					} catch (error) {
 						console.error(error);
 					}
+
 					idInstances++;
 				});
 			})

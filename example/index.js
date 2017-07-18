@@ -1,6 +1,7 @@
-import { Pyrite } from '../src/index';
+import { Core } from '../src/index';
 import Example from './example';
+import Demo from './demo';
 
-Pyrite
-.add(Example)
+Core
+.add([Example, Demo])
 .run('pyrite-app');

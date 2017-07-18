@@ -3,7 +3,7 @@ class Utils {
 		if (str === '') return ' ';
 		if (typeof str !== 'string') return str;
 
-		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 	}
 
 	mergeDeep(target, ...sources) {
@@ -30,6 +30,14 @@ class Utils {
 
 	isObject(item) {
 		return (item && typeof item === 'object' && !Array.isArray(item));
+	}
+
+	hasBrackets(value) {
+		return value[0] === '{' && value[value.length - 1] === '}';
+	}
+
+	expresion(expresion, scope) {
+		return (() => eval(expresion)).call(scope);
 	}
 }
 

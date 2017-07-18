@@ -2,6 +2,11 @@ import Core from './core';
 import Component from './component';
 
 export {
-	Core as Pyrite,
+	Core,
+	Component
+};
+
+window.pyrite = {
+	Core,
 	Component
 };
