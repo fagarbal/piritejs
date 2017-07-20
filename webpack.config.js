@@ -9,7 +9,7 @@ module.exports = {
 	},
 
 	output: {
-		filename: 'pyritejs.min.js',
+		filename: 'pyrite.min.js',
 		path: __dirname + '/dist',
 	},
 
