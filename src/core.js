@@ -6,12 +6,14 @@ class Core {
 		this.events = ['click', 'input', 'change'];
 	}
 
-	add(components) {
+	add(components, alias) {
 		if (Array.isArray(components)) {
-			components.forEach((component) => this.add(component));
+			components.forEach((component, i) => this.add(component, alias[i]));
 		} else {
-			this.components[components.name] = components;
-			this.componentNames.push(components.name.toUpperCase());
+			const componentName = alias || components.name;
+
+			this.components[componentName] = components;
+			this.componentNames.push(componentName.toUpperCase());
 		}
 
 		return this;

@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 	context: __dirname + '/',
@@ -42,5 +43,13 @@ module.exports = {
 			loaders: ['html-loader?config=htmlConfig'],
 			exclude: [path.resolve(__dirname, 'example/index.html')],
 		}]
-	}
+	},
+
+	plugins: [
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			}
+		})
+	]
 }
