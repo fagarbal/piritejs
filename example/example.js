@@ -1,36 +1,28 @@
-import { Component } from '../src';
+import { Template, State, Component } from '../src';
 import template from './templates/example.html';
 
+@Template(template, {
+	title: (controller) => `
+		<h1>Esto es un titulo</h1>
+		<span>Count ${controller.state.counter}</span>
+		</br>
+	`
+})
+@State({
+	counter: 100
+})
 export default class Example extends Component {
-  loaded() {
-  }
+	click(event) {
+		this.state.answer = !this.state.answer;
+		this.state.counter++
+		this.props.click(this.state.name);
+	}
 
-  template() {
-    return template;
-  }
+	childClick(value) {
+		this.state.name = value;
+	}
 
-  parameters() {
-    return {
-      answer: this.props.answer,
-      name: this.props.name ||  '',
-      counter: 0
-    };
-  }
-
-  click(event) {
-    this.param.answer = !this.param.answer;
-    this.props.click(this.param.name);
-  }
-
-  childClick(value) {
-    this.param.name = value;
-  }
-
-  change(event) {
-    this.param.name = event.target.value;
-  }
-
-  title() {
-    return `<h1>Esto es un titulo <span> Count ${this.param.counter}<br></span></h1>`;
-  }
+	change(event) {
+		this.state.name = event.target.value;
+	}
 }

@@ -1,10 +1,10 @@
-${this.title()}
+${this.templates.title(this)}
 
 ${this.props.children} Name:
-<input type="text" py-input="{this.change.bind(this)}" value="${this.param.name}" />
+<input type="text" py-input="{this.change.bind(this)}" value="${this.state.name}" />
 <button py-click="{this.click.bind(this)}">Change</button>
-<div 	py-hide="${this.param.answer}">
-    The answer for <span style="color: red">${this.param.name}</span> is <span>${this.param.answer}</span>
+<div py-hide="${this.state.answer}">
+    The answer for <span style="color: red">${this.state.name}</span> is <span>${this.state.answer}</span>
 </div>
 
 <Demo

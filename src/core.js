@@ -14,7 +14,7 @@ class Core {
 			this.componentNames.push(components.name.toUpperCase());
 		}
 
-		return this;	
+		return this;
 	}
 
 	run(nameApp) {
@@ -37,7 +37,7 @@ class Core {
 
 					idInstances++;
 				});
-			})
+			});
 		});
 	}
 

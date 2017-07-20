@@ -5,7 +5,7 @@ module.exports = {
 
 	entry: {
 		javascript: './example/index.js',
-		html: './example/index.html',
+		html: ['./example/index.html', './example/templates/demo.html', './example/templates/example.html']
 	},
 
 	output: {
@@ -28,7 +28,12 @@ module.exports = {
 		loaders: [{
 			test: /.jsx?$/,
 			exclude: /node_modules/,
-			loaders: ['babel-loader'],
+			loader: 'babel-loader',
+			query: {
+				cacheDirectory: true,
+				plugins: ['transform-decorators-legacy'],
+				presets: ['es2015', 'stage-0']
+			}
 		}, {
 			test: /index\.html$/,
 			loaders: ['file?name=[name].[ext]']

@@ -13,6 +13,7 @@
   "devDependencies": {
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.18.0",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
@@ -23,7 +24,9 @@
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-preset-stage-0": "^6.24.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/fagarbal/pyritejs.git"

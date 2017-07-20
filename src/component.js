@@ -12,7 +12,7 @@ class Component {
 		this.__setRefs(element);
 	}
 
-	parameters() {
+	parameters () {
 		return {};
 	}
 
@@ -20,7 +20,7 @@ class Component {
 		return '';
 	}
 
-	loaded() {}
+	onLoad() {}
 
 	__setParameters(element) {
 		this.__parametersHandler = {
@@ -29,7 +29,7 @@ class Component {
 
 				this.secureParam[prop] = utils.htmlEntities(newval);
 
-				const params = Object.assign({}, this.param);
+				const params = Object.assign({}, this.state);
 
 				utils.mergeDeep(obj, this.secureParam);
 				domUtils.changeDom(core.componentNames, initialElements, element, this.__getTemplate.bind(this));
@@ -41,7 +41,7 @@ class Component {
 			}
 		};
 
-		this.param = new Proxy(this.parameters(), this.__parametersHandler);
+		this.state = new Proxy(this.state, this.__parametersHandler);
 		this.secureParam = {};
 
 		const initialElements = domUtils.loadDom(core.componentNames, element, this.__getTemplate.bind(this));
@@ -78,7 +78,7 @@ class Component {
 		attributes.forEach((attribute) => {
 			if (!utils.hasBrackets(attribute.value))
 				return props[attribute.name] = attribute.value;
-			
+
 			const expresion = attribute.value.substring(1, attribute.value.length - 1);
 			const scope = parentId ? core.componentInstances[parentId] : this;
 
@@ -86,10 +86,12 @@ class Component {
 				props[attribute.name] = utils.expresion(expresion, scope);
 			} catch (error) {
 				throw new TypeError(`${element.nodeName} -> Attribute: ${attribute.name} :: ${expresion}`)
-			} 
+			}
 		});
 
 		props.children = element.innerHTML;
+
+		this.state = Object.assign({}, this.parameters(), props);
 
 		return props;
 	}
@@ -103,11 +105,11 @@ class Component {
 			refs.forEach((ref) => {
 				const refName = ref.getAttribute('ref');
 				const id = ref.getAttribute('py-id');
-				
+
 				this.refs[refName] = id ? core.componentInstances[id] : ref;
 			});
 
-			this.loaded();
+			this.onLoad();
 		});
 	}
 
