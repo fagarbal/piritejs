@@ -5,16 +5,13 @@ module.exports = {
 	context: __dirname + '/',
 
 	entry: {
-		javascript: './example/index.js',
-		html: ['./example/index.html', './example/templates/demo.html', './example/templates/example.html']
+		javascript: './lib/index.js'
 	},
 
 	output: {
-		filename: 'pyritejs.js',
+		filename: 'pyritejs.min.js',
 		path: __dirname + '/dist',
 	},
-
-	devtool: 'source-map',
 
 	resolve: {
 		extensions: ['', '.js', '.json'],
@@ -35,13 +32,6 @@ module.exports = {
 				plugins: ['transform-decorators-legacy'],
 				presets: ['es2015', 'stage-0']
 			}
-		}, {
-			test: /index\.html$/,
-			loaders: ['file?name=[name].[ext]']
-		}, {
-			test: /.html$/,
-			loaders: ['html-loader?config=htmlConfig'],
-			exclude: [path.resolve(__dirname, 'example/index.html')],
 		}]
 	},
 
