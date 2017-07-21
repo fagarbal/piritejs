@@ -26,6 +26,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-0": "^6.24.1",
+    "diff-dom": "^2.2.1",
     "dom-diff": "0.0.1",
     "socket.io-client": "^1.5.1",
     "uuid": "^2.0.3"
