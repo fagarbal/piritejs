@@ -1,6 +1,6 @@
 {
   "name": "pyrite",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Another Javascript frontend library",
   "main": "lib/index.js",
   "scripts": {
