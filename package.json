@@ -1,6 +1,6 @@
 {
   "name": "pyrite",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Another Javascript frontend library",
   "main": "lib/index.js",
   "scripts": {
@@ -28,7 +28,9 @@
     "babel-preset-stage-0": "^6.24.1",
     "diff-dom": "^2.2.1",
     "dom-diff": "0.0.1",
+    "proxyfull": "^1.0.0",
     "socket.io-client": "^1.5.1",
+    "universal-observer": "^1.0.1",
     "uuid": "^2.0.3"
   },
   "repository": {
